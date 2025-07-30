@@ -1,0 +1,26 @@
+services:
+    mock-oidc-provider:
+        image: tpadrieza/mock-oidc-provider:0.0.1
+        container_name: mock-oidc-provider
+        restart: on-failure
+        volumes:
+            - ./store:/app/store
+        ports:
+            - 3000:3000
+        environment:
+            NODE_ENV: production
+            PORT: 3000
+            ISSUER: http://localhost:3000
+            CLIENT_ID: client-id
+            CLIENT_SECRET: client-secret
+            REDIRECT_URIS: http://localhost:8080/api/auth/callback/mock-oidc-provider
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'curl --silent --fail http://mock-oidc-provider:3000/health || exit 1',
+                ]
+            interval: 2s
+            timeout: 5s
+            retries: 10
+        stop_grace_period: 5s

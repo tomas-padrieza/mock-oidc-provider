@@ -1,0 +1,42 @@
+{
+    "name": "mock-oidc-provider",
+    "type": "module",
+    "private": true,
+    "version": "0.0.1",
+    "scripts": {
+        "build": "tsc && tsup",
+        "format": "biome check . --write --unsafe",
+        "dev": "tsx watch ./src/index.ts"
+    },
+    "dependencies": {
+        "@types/oidc-provider": "^9.1.1",
+        "dotenv": "^16.4.7",
+        "ejs": "^3.1.10",
+        "express": "^5.1.0",
+        "express-ejs-layouts": "^2.5.1",
+        "helmet": "^8.1.0",
+        "neverthrow": "^8.2.0",
+        "oidc-provider": "^9.4.0",
+        "zod": "^4.0.14"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.1.2",
+        "@types/express": "^5.0.3",
+        "@types/express-ejs-layouts": "^2.5.4",
+        "@types/node": "^24.1.0",
+        "tsup": "^8.5.0",
+        "tsx": "^4.20.3",
+        "typescript": "^5.8.3"
+    },
+    "tsup": {
+        "entry": [
+            "src/index.ts"
+        ],
+        "replaceNodeEnv": true,
+        "format": "esm",
+        "splitting": false,
+        "sourcemap": false,
+        "minify": true,
+        "clean": true
+    }
+}
