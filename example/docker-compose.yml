@@ -1,6 +1,6 @@
 services:
     mock-oidc-provider:
-        image: tpadrieza/mock-oidc-provider:0.0.1
+        image: tpadrieza/mock-oidc-provider:latest
         container_name: mock-oidc-provider
         restart: on-failure
         volumes:
