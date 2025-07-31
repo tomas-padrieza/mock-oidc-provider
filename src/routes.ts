@@ -2,6 +2,7 @@ import { type Express, type NextFunction, type Request, type Response, urlencode
 import type { Provider } from 'oidc-provider';
 
 import { createMockAccount, findByLogin, updateUser, validateCredentials } from './accounts';
+import { env } from './env';
 import { LoginSchema, UserProfileSchema } from './types';
 
 const body = urlencoded({ extended: false });
@@ -9,6 +10,14 @@ const body = urlencoded({ extended: false });
 export default (app: Express, provider: Provider): void => {
     function setNoCache(_req: Request, res: Response, next: NextFunction) {
         res.set('cache-control', 'no-store');
+        next();
+    }
+
+    function checkUserManagementEnabled(_req: Request, res: Response, next: NextFunction) {
+        if (!env.USER_MANAGEMENT_ENABLED) {
+            res.status(403).send('User management is disabled');
+            return;
+        }
         next();
     }
 
@@ -93,7 +102,7 @@ export default (app: Express, provider: Provider): void => {
         );
     });
 
-    app.put('/user/:sub', body, (req, res) => {
+    app.put('/user/:sub', checkUserManagementEnabled, body, (req, res) => {
         const sub = req.params.sub;
         const validation = UserProfileSchema.partial().safeParse(req.body);
 
@@ -112,7 +121,7 @@ export default (app: Express, provider: Provider): void => {
         );
     });
 
-    app.post('/user', body, (req: Request, res: Response) => {
+    app.post('/user', checkUserManagementEnabled, body, (req: Request, res: Response) => {
         const validation = UserProfileSchema.safeParse(req.body);
 
         if (!validation.success) {
@@ -125,7 +134,7 @@ export default (app: Express, provider: Provider): void => {
         res.json({ success: true });
     });
 
-    app.get('/user/:username', body, (req: Request, res: Response) => {
+    app.get('/user/:username', checkUserManagementEnabled, body, (req: Request, res: Response) => {
         const username = req.params.username;
 
         findByLogin(username).match(

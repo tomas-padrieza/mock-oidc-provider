@@ -2,7 +2,7 @@ import z from 'zod';
 
 export const EnvSchema = z.object({
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-    PORT: z.string().regex(/^\d+$/).transform(Number).default(3000),
+    PORT: z.coerce.number().default(3000),
     ISSUER: z.url(),
     CLIENT_ID: z.string(),
     CLIENT_SECRET: z.string(),
@@ -11,6 +11,7 @@ export const EnvSchema = z.object({
         .transform((str) => str.split(',').map((url) => url.trim()))
         .pipe(z.array(z.url())),
     INITIAL_USERS_FILE: z.string().default('./store/users.json'),
+    USER_MANAGEMENT_ENABLED: z.stringbool().default(true),
 });
 export type Env = z.infer<typeof EnvSchema>;
 
