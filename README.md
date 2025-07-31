@@ -101,6 +101,17 @@ The application loads initial users from a JSON file (default: `./store/users.js
 ]
 ```
 
+#### OIDC flow debugging
+
+For testing and debugging OIDC flows, you can use the [OIDC Debugger](https://oidcdebugger.com/) website. This tool allows you to:
+
+-   Test authorization code flows
+-   Validate token responses
+-   Debug OIDC configuration issues
+-   Inspect JWT tokens and claims
+
+Simply configure the OIDC Debugger with your mock server's issuer URL (`http://localhost:3000`) and client credentials to test the authentication flow.
+
 ## API Endpoints
 
 ### User Management
