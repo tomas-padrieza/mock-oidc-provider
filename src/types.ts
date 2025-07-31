@@ -7,8 +7,18 @@ export const EnvSchema = z.object({
     CLIENT_ID: z.string(),
     CLIENT_SECRET: z.string(),
     REDIRECT_URIS: z
-        .string()
-        .transform((str) => str.split(',').map((url) => url.trim()))
+        .union([
+            z.string().transform((str) => {
+                if (str.includes('\n')) {
+                    return str
+                        .split('\n')
+                        .map((url) => url.trim())
+                        .filter((url) => url.length > 0);
+                }
+                return [str.trim()];
+            }),
+            z.array(z.string()),
+        ])
         .pipe(z.array(z.url())),
     INITIAL_USERS_FILE: z.string().default('./store/users.json'),
     USER_MANAGEMENT_ENABLED: z.stringbool().default(true),

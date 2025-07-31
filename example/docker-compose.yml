@@ -13,7 +13,9 @@ services:
             ISSUER: http://localhost:3000
             CLIENT_ID: client-id
             CLIENT_SECRET: client-secret
-            REDIRECT_URIS: https://oidcdebugger.com/debug
+            REDIRECT_URIS: |
+                https://oidcdebugger.com/debug
+                http://localhost:8080/callback
             USER_MANAGEMENT_ENABLED: true
         healthcheck:
             test:

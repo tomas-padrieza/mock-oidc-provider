@@ -73,15 +73,40 @@ npm run build
 
 #### Environment Variables
 
-| Variable             | Description                     | Default              | Required |
-| -------------------- | ------------------------------- | -------------------- | -------- |
-| `NODE_ENV`           | Environment mode                | `development`        | No       |
-| `PORT`               | Server port                     | `3000`               | No       |
-| `ISSUER`             | OIDC issuer URL                 | -                    | Yes      |
-| `CLIENT_ID`          | OAuth client ID                 | -                    | Yes      |
-| `CLIENT_SECRET`      | OAuth client secret             | -                    | Yes      |
-| `REDIRECT_URIS`      | Comma-separated redirect URIs   | -                    | Yes      |
-| `INITIAL_USERS_FILE` | Path to initial users JSON file | `./store/users.json` | No       |
+| Variable             | Description                       | Default              | Required |
+| -------------------- | --------------------------------- | -------------------- | -------- |
+| `NODE_ENV`           | Environment mode                  | `development`        | No       |
+| `PORT`               | Server port                       | `3000`               | No       |
+| `ISSUER`             | OIDC issuer URL                   | -                    | Yes      |
+| `CLIENT_ID`          | OAuth client ID                   | -                    | Yes      |
+| `CLIENT_SECRET`      | OAuth client secret               | -                    | Yes      |
+| `REDIRECT_URIS`      | Redirect URIs (see formats below) | -                    | Yes      |
+| `INITIAL_USERS_FILE` | Path to initial users JSON file   | `./store/users.json` | No       |
+
+##### REDIRECT_URIS Configuration
+
+The `REDIRECT_URIS` environment variable supports multiple formats:
+
+**String format (comma-separated):**
+
+```env
+REDIRECT_URIS=http://localhost:8080/callback,https://oidcdebugger.com/debug
+```
+
+**Multiline format (in docker-compose.yml):**
+
+```yaml
+environment:
+    REDIRECT_URIS: |
+        https://oidcdebugger.com/debug
+        http://localhost:8080/callback
+```
+
+**Single URL:**
+
+```env
+REDIRECT_URIS=https://oidcdebugger.com/debug
+```
 
 #### User Store
 
