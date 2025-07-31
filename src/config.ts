@@ -54,9 +54,6 @@ export const config: Configuration = {
     interactions: {
         policy,
     },
-    pkce: {
-        required: () => true,
-    },
     async loadExistingGrant(ctx) {
         const grantId =
             ctx.oidc.result?.consent?.grantId ||
