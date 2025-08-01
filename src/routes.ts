@@ -1,5 +1,6 @@
 import { type Express, type NextFunction, type Request, type Response, urlencoded } from 'express';
 import type { Provider } from 'oidc-provider';
+import { ulid } from 'ulidx';
 
 import { createMockAccount, findByLogin, updateUser, validateCredentials } from './accounts';
 import { env } from './env';
@@ -129,9 +130,17 @@ export default (app: Express, provider: Provider): void => {
             return;
         }
 
-        createMockAccount({ ...validation.data, sub: validation.data.username });
+        const existingAccount = findByLogin(validation.data.username);
+        if (existingAccount.isOk()) {
+            res.status(409).json({ success: false, error: 'User already exists' });
+            return;
+        }
 
-        res.json({ success: true });
+        const sub = ulid();
+
+        createMockAccount({ ...validation.data, sub });
+
+        res.json({ success: true, sub });
     });
 
     app.get('/user/:username', checkUserManagementEnabled, body, (req: Request, res: Response) => {
