@@ -42,7 +42,7 @@ export const config: Configuration = {
     claims: {
         openid: ['sub'],
         email: ['email'],
-        profile: ['firstName', 'lastName', 'email', 'username', 'roles'],
+        profile: ['firstName', 'lastName', 'email', 'username', 'roles', 'customClaim'],
     },
     scopes: ['openid', 'email', 'profile'],
     features: {
