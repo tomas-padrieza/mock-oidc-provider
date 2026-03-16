@@ -8,7 +8,7 @@ export const EnvSchema = z.object({
     CLIENT_SECRET: z.string(),
     REDIRECT_URIS: z
         .union([
-            z.string().transform((str) => {
+            z.string().transform((str: string) => {
                 if (str.includes('\n')) {
                     return str
                         .split('\n')
@@ -32,6 +32,7 @@ export const UserProfileSchema = z.object({
     email: z.string(),
     roles: z.array(z.string()),
     password: z.string(),
+    customClaim: z.union([z.array(z.string()), z.string(), z.boolean()]).optional(),
 });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 

@@ -16,15 +16,15 @@
         "express-ejs-layouts": "^2.5.1",
         "helmet": "^8.1.0",
         "neverthrow": "^8.2.0",
-        "oidc-provider": "^9.6.0",
+        "oidc-provider": "^9.7.0",
         "ulidx": "^2.4.1",
-        "zod": "^4.1.13"
+        "zod": "^4.3.6"
     },
     "devDependencies": {
         "@biomejs/biome": "2.1.2",
         "@types/express": "^5.0.6",
         "@types/express-ejs-layouts": "^2.5.4",
-        "@types/node": "^24.10.3",
+        "@types/node": "^24.12.0",
         "tsup": "^8.5.1",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3"
