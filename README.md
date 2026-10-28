@@ -14,13 +14,15 @@ The easiest way to get started is using Docker Compose:
 
 1. Clone the repository
 2. Navigate to the example directory:
-    ```bash
-    cd example
-    ```
+
+   ```bash
+   cd example
+   ```
 3. Start the service:
-    ```bash
-    docker-compose up -d
-    ```
+
+   ```bash
+   docker-compose up -d
+   ```
 
 The server will be available at `http://localhost:3000` with pre-configured users from `store/users.json`.
 

@@ -20,8 +20,8 @@ services:
         healthcheck:
             test:
                 [
-                    'CMD-SHELL',
-                    'curl --silent --fail http://mock-oidc-provider:3000/health || exit 1',
+                    "CMD-SHELL",
+                    "curl --silent --fail http://mock-oidc-provider:3000/health || exit 1",
                 ]
             interval: 2s
             timeout: 5s
