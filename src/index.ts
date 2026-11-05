@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { default as Provider } from 'oidc-provider';
 
 import { loadInitialUsers } from './accounts';
+import { saveClient } from './clients';
 import { config } from './config';
 import { env } from './env';
 import routes from './routes';
@@ -22,6 +23,11 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 
 const provider = new Provider(env.ISSUER, config);
+await saveClient(provider, {
+    client_id: env.CLIENT_ID,
+    client_secret: env.CLIENT_SECRET,
+    redirect_uris: env.REDIRECT_URIS,
+});
 
 app.enable('trust proxy');
 provider.proxy = true;

@@ -5,6 +5,7 @@
     "version": "0.0.3",
     "scripts": {
         "build": "tsc && rslib build",
+        "test": "tsx --test test/*.test.ts",
         "format": "biome check . --write --unsafe",
         "dev": "tsx watch ./src/index.ts"
     },
