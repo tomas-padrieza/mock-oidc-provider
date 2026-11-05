@@ -6,6 +6,7 @@
     "scripts": {
         "build": "tsc && rslib build",
         "test": "tsx --test test/*.test.ts",
+        "check": "biome ci .",
         "format": "biome check . --write --unsafe",
         "dev": "tsx watch ./src/index.ts"
     },

@@ -332,7 +332,11 @@ The server provides standard OIDC endpoints for authentication flows:
 -   `npm run dev` - Start development server with watch mode
 -   `npm run build` - Build the project
 -   `npm test` - Run API tests
+-   `npm run check` - Check formatting and lint without modifying files
 -   `npm run format` - Format code using Biome
+
+Pull requests targeting `master` run formatting, lint, build, and test checks. Docker images are built
+and published only on pushes to `master` and version tags matching `v*`.
 
 ### Docker
 
