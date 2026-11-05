@@ -25,6 +25,20 @@ export const EnvSchema = z.object({
 });
 export type Env = z.infer<typeof EnvSchema>;
 
+export const ClientConfigSchema = z.strictObject({
+    client_id: z
+        .string()
+        .min(1)
+        .refine((value) => value.trim().length > 0),
+    client_secret: z.string().min(1),
+    redirect_uris: z.array(z.url()).min(1),
+});
+export type ClientConfig = z.infer<typeof ClientConfigSchema>;
+
+export const ClientUpdateSchema = ClientConfigSchema.partial().refine(
+    (client) => Object.keys(client).length > 0,
+);
+
 export const UserProfileSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),

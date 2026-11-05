@@ -4,7 +4,7 @@ Basic OIDC mock server to use for development and testing purposes.
 
 ## Overview
 
-This is a lightweight OpenID Connect (OIDC) provider implementation designed for development and testing environments. It provides OIDC authentication flows and user management endpoints.
+This is a lightweight OpenID Connect (OIDC) provider implementation designed for development and testing environments. It provides OIDC authentication flows and user and client management endpoints.
 
 ## Getting Started
 
@@ -238,6 +238,74 @@ curl -X GET http://localhost:3000/user/john_doe \
   -H "Accept: application/json"
 ```
 
+### Client Management
+
+The client configured by `CLIENT_ID`, `CLIENT_SECRET`, and `REDIRECT_URIS` is loaded at startup.
+The following endpoints can manage that client and additional clients immediately, without restarting
+the server. All clients use the authorization code flow.
+
+Client changes are stored in memory only. Restarting the server discards API-created clients and
+restores the environment-configured client. Renaming or deleting a client makes its old ID unavailable
+for subsequent OIDC requests; existing tokens and grants are not explicitly revoked.
+
+These endpoints are unauthenticated and intended only for trusted development and test environments.
+Client management endpoints are always enabled.
+
+Send request bodies with `Content-Type: application/json`.
+
+#### Create a Client
+
+**Endpoint:** `POST /client`
+
+All three fields are required. `client_id` and `client_secret` must be non-empty strings, and
+`redirect_uris` must be a non-empty array of valid redirect URIs.
+
+```bash
+curl -X POST http://localhost:3000/client \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_id": "another-client",
+    "client_secret": "another-secret",
+    "redirect_uris": ["http://localhost:8080/callback"]
+  }'
+```
+
+Returns `201` with `{"success":true,"client_id":"another-client"}`.
+
+#### Update a Client
+
+**Endpoint:** `PUT /client/{clientId}`
+
+Provide one or more of `client_id`, `client_secret`, and `redirect_uris`. Omitted fields are preserved;
+the redirect URI array replaces the existing array. Providing a different `client_id` renames the
+client, and the old ID stops working. URL-encode the client ID in the path when necessary.
+
+```bash
+curl -X PUT http://localhost:3000/client/another-client \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_secret": "updated-secret",
+    "redirect_uris": ["http://localhost:8080/new-callback"]
+  }'
+```
+
+Returns `200` with `{"success":true,"client_id":"another-client"}`.
+
+#### Delete a Client
+
+**Endpoint:** `DELETE /client/{clientId}`
+
+```bash
+curl -X DELETE http://localhost:3000/client/another-client
+```
+
+Returns `200` with `{"success":true}`.
+
+Validation, conflict, and not-found errors return `{"success":false,"error":"..."}`. Invalid bodies or client
+metadata return `400`; updating or deleting an unknown client returns `404`; creating a duplicate ID
+or renaming to an existing ID returns `409`. Invalid updates leave the existing configuration intact.
+Successful responses do not include client secrets.
+
 ### Health Check
 
 **Endpoint:** `GET /health`
@@ -263,7 +331,12 @@ The server provides standard OIDC endpoints for authentication flows:
 
 -   `npm run dev` - Start development server with watch mode
 -   `npm run build` - Build the project
+-   `npm test` - Run API tests
+-   `npm run check` - Check formatting and lint without modifying files
 -   `npm run format` - Format code using Biome
+
+Pull requests targeting `master` run formatting, lint, build, and test checks. Docker images are built
+and published only on pushes to `master` and version tags matching `v*`.
 
 ### Docker
 

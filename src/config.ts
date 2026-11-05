@@ -1,7 +1,6 @@
 import { type Configuration, interactionPolicy } from 'oidc-provider';
 
 import { findAccount } from './accounts';
-import { env } from './env';
 
 const policy = interactionPolicy.base();
 const selectAccount = new interactionPolicy.Prompt({
@@ -27,15 +26,6 @@ selectAccount.checks.add(
 policy.add(selectAccount, 1);
 
 export const config: Configuration = {
-    clients: [
-        {
-            client_id: env.CLIENT_ID,
-            client_secret: env.CLIENT_SECRET,
-            response_types: ['code'],
-            grant_types: ['authorization_code'],
-            redirect_uris: env.REDIRECT_URIS,
-        },
-    ],
     cookies: {
         keys: ['random_cookie_key'],
     },

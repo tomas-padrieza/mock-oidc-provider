@@ -1,10 +1,11 @@
 import { type Express, type NextFunction, type Request, type Response, urlencoded } from 'express';
-import type { Provider } from 'oidc-provider';
+import { errors, type Provider } from 'oidc-provider';
 import { ulid } from 'ulidx';
 
 import { createMockAccount, findByLogin, updateUser, validateCredentials } from './accounts';
+import { clientAdapter, saveClient } from './clients';
 import { env } from './env';
-import { LoginSchema, UserProfileSchema } from './types';
+import { ClientConfigSchema, ClientUpdateSchema, LoginSchema, UserProfileSchema } from './types';
 
 const body = urlencoded({ extended: false });
 
@@ -21,6 +22,79 @@ export default (app: Express, provider: Provider): void => {
         }
         next();
     }
+
+    app.post('/client', setNoCache, body, async (req, res) => {
+        const validation = ClientConfigSchema.safeParse(req.body);
+        if (!validation.success) {
+            res.status(400).json({ success: false, error: 'Invalid request' });
+            return;
+        }
+
+        if (await provider.Client.find(validation.data.client_id)) {
+            res.status(409).json({ success: false, error: 'Client already exists' });
+            return;
+        }
+
+        try {
+            await saveClient(provider, validation.data);
+        } catch (error) {
+            if (!(error instanceof errors.InvalidClientMetadata)) throw error;
+            res.status(400).json({ success: false, error: error.error_description });
+            return;
+        }
+
+        res.status(201).json({ success: true, client_id: validation.data.client_id });
+    });
+
+    app.put('/client/:clientId', setNoCache, body, async (req, res) => {
+        const validation = ClientUpdateSchema.safeParse(req.body);
+        if (!validation.success) {
+            res.status(400).json({ success: false, error: 'Invalid request' });
+            return;
+        }
+
+        const clientId = req.params.clientId;
+        const existing = await provider.Client.find(clientId);
+        if (!existing) {
+            res.status(404).json({ success: false, error: 'Client not found' });
+            return;
+        }
+
+        const updated = ClientConfigSchema.parse({
+            client_id: existing.clientId,
+            client_secret: existing.clientSecret,
+            redirect_uris: existing.redirectUris,
+            ...validation.data,
+        });
+        if (updated.client_id !== clientId && (await provider.Client.find(updated.client_id))) {
+            res.status(409).json({ success: false, error: 'Client already exists' });
+            return;
+        }
+
+        try {
+            await saveClient(provider, updated);
+        } catch (error) {
+            if (!(error instanceof errors.InvalidClientMetadata)) throw error;
+            res.status(400).json({ success: false, error: error.error_description });
+            return;
+        }
+
+        if (updated.client_id !== clientId) {
+            await clientAdapter(provider).destroy(clientId);
+        }
+        res.json({ success: true, client_id: updated.client_id });
+    });
+
+    app.delete('/client/:clientId', setNoCache, async (req, res) => {
+        const clientId = req.params.clientId;
+        if (!(await provider.Client.find(clientId))) {
+            res.status(404).json({ success: false, error: 'Client not found' });
+            return;
+        }
+
+        await clientAdapter(provider).destroy(clientId);
+        res.json({ success: true });
+    });
 
     app.get('/health', (_req, res) => {
         res.status(200).send('OK');
