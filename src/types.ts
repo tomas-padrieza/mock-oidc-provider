@@ -22,6 +22,9 @@ export const EnvSchema = z.object({
         .pipe(z.array(z.url())),
     INITIAL_USERS_FILE: z.string().default('./store/users.json'),
     USER_MANAGEMENT_ENABLED: z.stringbool().default(true),
+    ACCESS_TOKEN_TTL: z.coerce.number().int().positive().optional(),
+    ID_TOKEN_TTL: z.coerce.number().int().positive().optional(),
+    REFRESH_TOKEN_TTL: z.coerce.number().int().positive().optional(),
 });
 export type Env = z.infer<typeof EnvSchema>;
 

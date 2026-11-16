@@ -8,6 +8,9 @@ process.env.ISSUER = 'http://localhost:3000';
 process.env.CLIENT_ID = 'startup-client';
 process.env.CLIENT_SECRET = 'startup-secret';
 process.env.REDIRECT_URIS = 'http://localhost:8080/callback';
+process.env.ACCESS_TOKEN_TTL = '900';
+process.env.ID_TOKEN_TTL = '1200';
+process.env.REFRESH_TOKEN_TTL = '86400';
 
 const { config } = await import('../src/config');
 const { saveClient } = await import('../src/clients');
@@ -223,5 +226,15 @@ describe('client management', () => {
         assert.ok(client);
         assert.ok(client.compareClientSecret(startupClient.client_secret));
         assert.ok(client.redirectUriAllowed(startupClient.redirect_uris[0]));
+    });
+});
+
+describe('token lifetime configuration', () => {
+    it('applies configured token TTLs in seconds', () => {
+        assert.deepEqual(config.ttl, {
+            AccessToken: 900,
+            IdToken: 1200,
+            RefreshToken: 86400,
+        });
     });
 });

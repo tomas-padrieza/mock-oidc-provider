@@ -75,15 +75,21 @@ npm run build
 
 #### Environment Variables
 
-| Variable             | Description                       | Default              | Required |
-| -------------------- | --------------------------------- | -------------------- | -------- |
-| `NODE_ENV`           | Environment mode                  | `development`        | No       |
-| `PORT`               | Server port                       | `3000`               | No       |
-| `ISSUER`             | OIDC issuer URL                   | -                    | Yes      |
-| `CLIENT_ID`          | OAuth client ID                   | -                    | Yes      |
-| `CLIENT_SECRET`      | OAuth client secret               | -                    | Yes      |
-| `REDIRECT_URIS`      | Redirect URIs (see formats below) | -                    | Yes      |
-| `INITIAL_USERS_FILE` | Path to initial users JSON file   | `./store/users.json` | No       |
+| Variable             | Description                       | Default                         | Required |
+| -------------------- | --------------------------------- | ------------------------------- | -------- |
+| `NODE_ENV`           | Environment mode                  | `development`                   | No       |
+| `PORT`               | Server port                       | `3000`                          | No       |
+| `ISSUER`             | OIDC issuer URL                   | -                               | Yes      |
+| `CLIENT_ID`          | OAuth client ID                   | -                               | Yes      |
+| `CLIENT_SECRET`      | OAuth client secret               | -                               | Yes      |
+| `REDIRECT_URIS`      | Redirect URIs (see formats below) | -                               | Yes      |
+| `INITIAL_USERS_FILE` | Path to initial users JSON file   | `./store/users.json`            | No       |
+| `ACCESS_TOKEN_TTL`   | Access token lifetime in seconds  | OIDC provider default (1 hour)  | No       |
+| `ID_TOKEN_TTL`       | ID token lifetime in seconds      | OIDC provider default (1 hour)  | No       |
+| `REFRESH_TOKEN_TTL`  | Refresh token lifetime in seconds | OIDC provider default (14 days) | No       |
+
+Token TTL settings must be positive whole numbers of seconds. When omitted, the OIDC provider's
+default expiration behavior is used.
 
 ##### REDIRECT_URIS Configuration
 
