@@ -1,6 +1,7 @@
 import { type Configuration, interactionPolicy } from 'oidc-provider';
 
 import { findAccount } from './accounts';
+import { env } from './env';
 
 const policy = interactionPolicy.base();
 const selectAccount = new interactionPolicy.Prompt({
@@ -26,6 +27,21 @@ selectAccount.checks.add(
 policy.add(selectAccount, 1);
 
 export const config: Configuration = {
+    ...(env.ACCESS_TOKEN_TTL === undefined &&
+    env.ID_TOKEN_TTL === undefined &&
+    env.REFRESH_TOKEN_TTL === undefined
+        ? {}
+        : {
+              ttl: {
+                  ...(env.ACCESS_TOKEN_TTL === undefined
+                      ? {}
+                      : { AccessToken: env.ACCESS_TOKEN_TTL }),
+                  ...(env.ID_TOKEN_TTL === undefined ? {} : { IdToken: env.ID_TOKEN_TTL }),
+                  ...(env.REFRESH_TOKEN_TTL === undefined
+                      ? {}
+                      : { RefreshToken: env.REFRESH_TOKEN_TTL }),
+              },
+          }),
     cookies: {
         keys: ['random_cookie_key'],
     },
